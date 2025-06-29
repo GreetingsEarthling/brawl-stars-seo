@@ -1,12 +1,24 @@
 import requests
 import json
+import pandas as pd
+import sqlalchemy as db
 
 API_BASE = "https://api.brawlstars.com/v1"
 HEADERS = {
-  "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6Ijc2ZWEwMzkxLWJmMjAtNDM1My04ZWQ1LTBjZTViMWE2YmZiYyIsImlhdCI6MTc1MTE1ODc3NCwic3ViIjoiZGV2ZWxvcGVyLzk2YmEzYmY1LWYyNjQtODBlZS0zNThjLTI4MWI1N2RlYWUwMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiMzQuMTk1LjE2MS44MiJdLCJ0eXBlIjoiY2xpZW50In1dfQ.PgJ6n_IaSQxcIlIOEdp9vsf29Qa6nuVBh-Uy0e4JLIPhnhoXSqQ8yhz6ERulNOirP2A91zyQnWNRb9JPBTDPDw"
+  "Authorization": "Bearer "
 }
 
 response = requests.get(f"{API_BASE}/brawlers", headers=HEADERS)
 data = response.json()
 
-print(json.dumps(data, indent=3))
+df = pd.DataFrame(data["items"])
+df['starPowers'] = df['starPowers'].apply(json.dumps)
+df['gadgets'] = df['gadgets'].apply(json.dumps)
+
+engine = db.create_engine('sqlite:///brawl_stars.db')
+df.to_sql('brawlers', con=engine, if_exists='replace', index=False)
+
+with engine.connect() as connection:
+  query_result = connection.execute(db.text("SELECT * FROM brawlers;")).fetchall()
+
+print(pd.DataFrame(query_result))
