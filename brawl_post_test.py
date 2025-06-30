@@ -1,5 +1,3 @@
-import requests
-import json
 import unittest
 import pandas as pd
 import sqlalchemy as db
