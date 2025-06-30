@@ -1,5 +1,7 @@
 # Brawl Stars API Data Loader
 
+[![Check Style](https://github.com/GreetingsEarthling/brawl-stars-seo/actions/workflows/style.yaml/badge.svg)](https://github.com/GreetingsEarthling/brawl-stars-seo/actions/workflows/style.yaml)
+
 This project fetches Brawler data from the Brawl Stars API and stores it in a local SQLite database.
 
 ## Setup Instructions
