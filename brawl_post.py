@@ -19,6 +19,8 @@ engine = db.create_engine('sqlite:///brawl_stars.db')
 df.to_sql('brawlers', con=engine, if_exists='replace', index=False)
 
 with engine.connect() as connection:
-  query_result = connection.execute(db.text("SELECT * FROM brawlers;")).fetchall()
+    query_result = connection.execute(
+        db.text("SELECT * FROM brawlers;")
+    ).fetchall()
 
 print(pd.DataFrame(query_result))
